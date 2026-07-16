@@ -1,0 +1,13 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { LogOut, Mail, ShieldCheck, Trash2 } from "lucide-react";
+
+export function SettingsPanel() {
+  const router = useRouter(); const [email, setEmail] = useState("正在确认…"); const [busy, setBusy] = useState(false); const [error, setError] = useState("");
+  useEffect(() => { let active = true; fetch("/api/me", { cache: "no-store" }).then(async (r) => { if (r.status === 401) { router.replace("/login"); return null; } const body = await r.json(); if (!r.ok) throw new Error(body.error?.message ?? "加载失败"); return body.user.email as string; }).then((value) => { if (active && value) setEmail(value); }).catch((e) => { if (active) setError(e instanceof Error ? e.message : "加载失败"); }); return () => { active = false; }; }, [router]);
+  async function logout() { setBusy(true); await fetch("/api/auth/logout", { method: "POST" }); router.replace("/"); router.refresh(); }
+  async function remove() { if (!confirm("这会永久删除账号和全部信件，且无法恢复。确定继续吗？")) return; const typed = prompt("请输入“永久删除”以确认"); if (typed !== "永久删除") return; setBusy(true); setError(""); const response = await fetch("/api/account", { method: "DELETE" }); const body = await response.json(); if (!response.ok) { setError(body.error?.message ?? "删除失败"); setBusy(false); return; } router.replace("/"); router.refresh(); }
+  return <section className="paper paper-edge mt-6 px-6 py-8"><p className="text-[10px] tracking-[.28em] text-[#856d51]">LETTER KEEPER</p><h1 className="hand mt-2 text-3xl">我的信箱</h1><div className="mt-7 space-y-1 border-y border-[#8d7353]/35 py-4"><div className="flex min-h-14 items-center gap-3"><Mail aria-hidden="true" size={18} className="text-[#704f36]" /><div><p className="text-xs text-[#79644d]">提醒邮箱</p><p className="mt-1 break-all text-sm">{email}</p></div></div><div className="flex min-h-14 items-center gap-3"><ShieldCheck aria-hidden="true" size={18} className="text-[#704f36]" /><div><p className="text-xs text-[#79644d]">隐私保护</p><p className="mt-1 text-sm">正文加密保存 · 到期前不可读取</p></div></div></div>{error && <p role="alert" className="mt-4 text-center text-xs text-[#7b312d]">{error}</p>}<button disabled={busy} onClick={logout} className="mt-6 flex min-h-12 w-full items-center justify-center gap-2 border border-[#80694e]/45 text-sm disabled:opacity-50"><LogOut aria-hidden="true" size={17} />退出登录</button><button disabled={busy} onClick={remove} className="mt-3 flex min-h-12 w-full items-center justify-center gap-2 border border-[#8f4740]/45 text-sm text-[#7b312d] disabled:opacity-50"><Trash2 aria-hidden="true" size={17} />删除账号与全部信件</button></section>;
+}

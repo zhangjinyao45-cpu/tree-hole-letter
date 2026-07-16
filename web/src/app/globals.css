@@ -1,0 +1,115 @@
+@import "tailwindcss";
+
+:root {
+  --ink: #28231f;
+  --ink-soft: #5b5047;
+  --paper: #d8c39b;
+  --paper-light: #eadbbd;
+  --paper-deep: #b79768;
+  --wood: #211b18;
+  --wood-light: #3a2d27;
+  --seal: #7a3028;
+  --seal-dark: #4d1c18;
+  --gold: #ae8c58;
+  --shadow: rgba(8, 6, 5, 0.58);
+  --font-letter: "Songti SC", "Noto Serif CJK SC", "STSong", Georgia, serif;
+  --font-hand: "STKaiti", "KaiTi", "FangSong", cursive;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--wood);
+  color: var(--ink);
+  font-family: var(--font-letter);
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background:
+    radial-gradient(circle at 50% -12%, rgba(215, 167, 99, 0.19), transparent 34rem),
+    linear-gradient(90deg, transparent 0 7%, rgba(255,255,255,.018) 7.2%, transparent 7.5% 18%, rgba(0,0,0,.09) 18.3%, transparent 18.7% 72%, rgba(255,255,255,.015) 72.4%, transparent 72.8%),
+    repeating-linear-gradient(2deg, #241d1a 0 3px, #211a17 3px 7px, #2a211d 7px 9px);
+  background-attachment: fixed;
+}
+
+::selection { background: rgba(122, 48, 40, .28); }
+
+button, input, textarea { font: inherit; }
+
+button, a { -webkit-tap-highlight-color: transparent; }
+
+:focus-visible {
+  outline: 3px solid #d6b27a;
+  outline-offset: 3px;
+}
+
+.safe-bottom { padding-bottom: calc(5.75rem + env(safe-area-inset-bottom)); }
+
+.paper {
+  position: relative;
+  isolation: isolate;
+  background:
+    linear-gradient(100deg, rgba(255,255,255,.13), transparent 28% 75%, rgba(61,38,20,.08)),
+    repeating-linear-gradient(0deg, rgba(69,44,25,.028) 0 1px, transparent 1px 5px),
+    var(--paper-light);
+  border: 1px solid rgba(89, 59, 34, .38);
+  box-shadow: 0 18px 45px var(--shadow), inset 0 0 32px rgba(82, 53, 25, .11);
+}
+
+.paper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: .28;
+  background-image: radial-gradient(circle at 15% 20%, rgba(73,43,21,.18) 0 1px, transparent 1.2px), radial-gradient(circle at 83% 68%, rgba(255,255,255,.3) 0 1px, transparent 1.2px);
+  background-size: 19px 23px, 27px 31px;
+  mix-blend-mode: multiply;
+}
+
+.paper-edge { clip-path: polygon(.8% 0, 99.3% .5%, 100% 98.8%, 98.9% 100%, .4% 99.1%, 0 1.2%); }
+
+.hand { font-family: var(--font-hand); }
+
+.ink-muted { color: var(--ink-soft); }
+
+.stamp {
+  border: 2px solid currentColor;
+  color: #4c1816;
+  font-family: var(--font-hand);
+  letter-spacing: .12em;
+  transform: rotate(-7deg);
+}
+
+.wood-divider { border-color: rgba(216, 195, 155, .17); }
+
+.wax-seal {
+  background: radial-gradient(circle at 34% 28%, #a8493c, #742c25 48%, #4c1816 100%);
+  box-shadow: 0 6px 12px rgba(30, 10, 8, .48), inset 2px 3px 5px rgba(255, 187, 151, .23), inset -3px -4px 7px rgba(33, 7, 5, .5);
+}
+
+@keyframes float-letter {
+  0%, 100% { transform: translateY(0) rotate(-1.5deg); }
+  50% { transform: translateY(-7px) rotate(-.5deg); }
+}
+
+@keyframes soft-appear {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.float-letter { animation: float-letter 5.5s ease-in-out infinite; }
+.soft-appear { animation: soft-appear .7s ease-out both; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
